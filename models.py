@@ -2,12 +2,15 @@ import datetime
 import uuid
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import JSON
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
 
 class Seller(db.Model):
+    __tablename__ = "seller"
+
     id = db.Column(db.Integer, primary_key=True)
     iin = db.Column(db.String(12), unique=True, nullable=False)
     company_name = db.Column(db.String(255), nullable=False)
@@ -27,7 +30,7 @@ class Seller(db.Model):
 
 
 class ProductCard(db.Model):
-    __tablename__ = 'product_cards'
+    __tablename__ = 'product_card'
 
     id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(255), nullable=False)
@@ -36,17 +39,17 @@ class ProductCard(db.Model):
     price = db.Column(db.Float)
     currency = db.Column(db.String(10))
     gender = db.Column(db.String(10))
-    sizes = db.Column(db.ARRAY(db.String))
-    colors = db.Column(db.ARRAY(db.String))
-    images = db.Column(db.ARRAY(db.String))
+    sizes = db.Column(JSON)  # Заменяем ARRAY на JSON
+    colors = db.Column(JSON)  # Заменяем ARRAY на JSON
+    images = db.Column(JSON)  # Заменяем ARRAY на JSON
     description = db.Column(db.Text)
     in_stock = db.Column(db.Boolean, default=True)
-    tags = db.Column(db.ARRAY(db.String))
-    season = db.Column(db.ARRAY(db.String))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    tags = db.Column(JSON)  # Заменяем ARRAY на JSON
+    season = db.Column(JSON)  # Заменяем ARRAY на JSON
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    type = db.Column(db.String(50))  # для указания подкласса
-    seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'), nullable=False)
+    type = db.Column(db.String(50))
+    seller_id = db.Column(db.Integer, db.ForeignKey('seller.id'), nullable=False)
     seller = db.relationship('Seller', back_populates='products')
 
     __mapper_args__ = {
@@ -56,9 +59,9 @@ class ProductCard(db.Model):
 
 
 class TShirt(ProductCard):
-    __tablename__ = 'tshirts'
+    __tablename__ = 'tshirt'
 
-    id = db.Column(db.String, db.ForeignKey('product_cards.id'), primary_key=True)
+    id = db.Column(db.String, db.ForeignKey('product_card.id'), primary_key=True)
     material = db.Column(db.String(100))  # хлопок, полиэстер и т.п.
     sleeve_length = db.Column(db.String(50))  # короткий, длинный
 
@@ -70,7 +73,7 @@ class TShirt(ProductCard):
 class Pants(ProductCard):
     __tablename__ = 'pants'
 
-    id = db.Column(db.String, db.ForeignKey('product_cards.id'), primary_key=True)
+    id = db.Column(db.String, db.ForeignKey('product_card.id'), primary_key=True)
     waist_type = db.Column(db.String(50))  # высокая, средняя, низкая
     length = db.Column(db.String(50))  # полная длина, шорты и т.п.
 
