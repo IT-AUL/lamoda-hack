@@ -6,7 +6,7 @@ from flask_jwt_extended import (
 from werkzeug.security import check_password_hash
 
 from config import Config
-from model.seller import db, Seller
+from models import db, Seller
 from utils import generate_random_password, generate_username, send_email_mock
 
 app = Flask(__name__)
