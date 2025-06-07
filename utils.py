@@ -1,9 +1,11 @@
 import random
 import string
+import uuid
+import os
 
 import boto3
 
-from s3 import s3service
+from s3 import s3service, generate_presigned_url
 
 s3 = s3service()
 
@@ -20,6 +22,23 @@ def generate_username(email):
 def send_email_mock(to, subject, body):
     print(f"\n=== Email to: {to} ===\nSubject: {subject}\n{body}\n=======================\n")
 
-def upload2bucket(file_path):
+
+def generate_unique_filename(original_filename):
+    name, ext = os.path.splitext(original_filename)
+    unique_id = str(uuid.uuid4())
+    return f"{unique_id}{ext}"
+
+
+def upload2bucket(file_path, original_filename=None):
     bucket_name = "lamoda"
-    s3.upload_file(file_path, bucket_name, file_path)
+    if original_filename:
+        unique_filename = generate_unique_filename(original_filename)
+    else:
+        unique_filename = os.path.basename(file_path)
+    
+    try:
+        s3.upload_file(file_path, bucket_name, unique_filename)
+        url = generate_presigned_url(bucket_name, unique_filename)
+        return url
+    except Exception as e:
+        return None
