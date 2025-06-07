@@ -1,9 +1,5 @@
-import random
-import string
-import uuid
 import os
-
-import boto3
+import uuid
 
 from s3 import s3service, generate_presigned_url
 
