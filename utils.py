@@ -20,5 +20,6 @@ def generate_username(email):
 def send_email_mock(to, subject, body):
     print(f"\n=== Email to: {to} ===\nSubject: {subject}\n{body}\n=======================\n")
 
-def upload2bucket(bucket_name="lamoda", file_path):
+def upload2bucket(file_path):
+    bucket_name = "lamoda"
     s3.upload_file(file_path, bucket_name, file_path)
