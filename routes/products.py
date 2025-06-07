@@ -26,7 +26,7 @@ def create_product():
         "in_stock": data.get("in_stock", True),
         "tags": data.get("tags"),
         "season": data.get("season"),
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(),
         "seller_id": current_user_id
     }
 
@@ -63,7 +63,8 @@ def get_product(product_id):
     seller = Seller.query.get(current_user_id)
     if not seller:
         return jsonify({"message": "User not found"}), 404
-    if seller.products.filter_by(id=product_id).first() is None:
+    product = next((p for p in seller.products if str(p.id) == product_id), None)
+    if not product:
         return jsonify({"message": "Product not found"}), 404
 
     product = ProductCard.query.get_or_404(product_id)
@@ -77,7 +78,8 @@ def update_product(product_id):
     seller = Seller.query.get(current_user_id)
     if not seller:
         return jsonify({"message": "User not found"}), 404
-    if seller.products.filter_by(id=product_id).first() is None:
+    product = next((p for p in seller.products if str(p.id) == product_id), None)
+    if not product:
         return jsonify({"message": "Product not found"}), 404
 
     data = request.json
@@ -107,7 +109,8 @@ def delete_product(product_id):
     seller = Seller.query.get(current_user_id)
     if not seller:
         return jsonify({"message": "User not found"}), 404
-    if seller.products.filter_by(id=product_id).first() is None:
+    product = next((p for p in seller.products if str(p.id) == product_id), None)
+    if not product:
         return jsonify({"message": "Product not found"}), 404
     product = ProductCard.query.get_or_404(product_id)
     db.session.delete(product)
