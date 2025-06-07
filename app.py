@@ -7,6 +7,7 @@ from werkzeug.security import check_password_hash
 
 from config import Config
 from models import db, Seller
+from routes.products import product_bp
 from utils import generate_random_password, generate_username, send_email_mock
 
 app = Flask(__name__)
@@ -16,6 +17,7 @@ db.init_app(app)
 jwt = JWTManager(app)
 with app.app_context():
     db.create_all()
+app.register_blueprint(product_bp)
 
 
 @app.route("/registration", methods=["POST"])
@@ -25,14 +27,14 @@ def register_seller():
     if Seller.query.filter_by(email=data["email"]).first():
         return jsonify({"message": "Пользователь с такой почтой уже существует"}), 400
 
-    if Seller.query.filter_by(iin=data["iin"]).first():
+    if Seller.query.filter_by(inn=data["inn"]).first():
         return jsonify({"message": "Пользователь с таким ИИН уже существует"}), 400
 
     password = generate_random_password()
     login = generate_username(data["email"])
 
     seller = Seller(
-        iin=data["iin"],
+        inn=data["inn"],
         company_name=data["company_name"],
         bank_account=data["bank_account"],
         legal_address=data["legal_address"],
@@ -51,8 +53,8 @@ def register_seller():
         body=f"Ваш логин: {login}\nВаш пароль: {password}"
     )
 
-    access_token = create_access_token(identity=seller.id)
-    refresh_token = create_refresh_token(identity=seller.id)
+    access_token = create_access_token(identity=str(seller.id))
+    refresh_token = create_refresh_token(identity=str(seller.id))
 
     return jsonify({
         "message": "Регистрация прошла успешно",

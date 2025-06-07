@@ -12,7 +12,7 @@ class Seller(db.Model):
     __tablename__ = "seller"
 
     id = db.Column(db.Integer, primary_key=True)
-    iin = db.Column(db.String(12), unique=True, nullable=False)
+    inn = db.Column(db.String(12), unique=True, nullable=False)
     company_name = db.Column(db.String(255), nullable=False)
     bank_account = db.Column(db.String(64), nullable=False)
     legal_address = db.Column(db.String(255), nullable=False)
