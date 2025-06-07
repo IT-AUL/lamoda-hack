@@ -59,7 +59,9 @@ def register_seller():
     return jsonify({
         "message": "Регистрация прошла успешно",
         "access_token": access_token,
-        "refresh_token": refresh_token
+        "refresh_token": refresh_token,
+        "login": login,
+        "password": password
     }), 201
 
 
