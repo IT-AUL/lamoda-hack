@@ -72,7 +72,7 @@ def register_seller():
 @jwt_required(refresh=True)
 def refresh():
     current_user = get_jwt_identity()
-    access_token = create_access_token(identity=current_user)
+    access_token = create_access_token(identity=str(current_user))
     return jsonify(access_token=access_token), 200
 
 
@@ -89,8 +89,8 @@ def login():
     if not seller or not check_password_hash(seller.password_hash, password):
         return jsonify({"msg": "Неверный логин или пароль"}), 401
 
-    access_token = create_access_token(identity=seller.id)
-    refresh_token = create_refresh_token(identity=seller.id)
+    access_token = create_access_token(identity=str(seller.id))
+    refresh_token = create_refresh_token(identity=str(seller.id))
 
     return jsonify({
         "access_token": access_token,
