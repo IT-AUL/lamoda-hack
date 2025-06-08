@@ -4,13 +4,14 @@ from flask_jwt_extended import (
     jwt_required, get_jwt_identity
 )
 from werkzeug.security import check_password_hash
-
+from flask_cors import CORS
 from config import Config
 from models import db, Seller
 from routes.products import product_bp
 from utils import generate_random_password, generate_username, send_email_mock
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_object(Config)
 
 db.init_app(app)

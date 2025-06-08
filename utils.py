@@ -42,3 +42,8 @@ def upload2bucket(file_path, original_filename=None):
         return url
     except Exception as e:
         return None
+
+
+def get_prompt():
+    with open('prompt.txt') as file:
+        return file.read()
