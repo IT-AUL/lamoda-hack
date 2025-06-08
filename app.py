@@ -96,5 +96,22 @@ def login():
     }), 200
 
 
+@app.get("/info")
+def info():
+    current_user_id = get_jwt_identity()
+    seller = Seller.query.filter_by(id=current_user_id).first()
+    if seller is None:
+        return jsonify({"msg": "<UNK> <UNK> <UNK> <UNK> <UNK>"}), 400
+    else:
+        return jsonify({
+            "inn": seller.inn,
+            "company_name": seller.company_name,
+            "bank_account": seller.bank_account,
+            "legal_address": seller.legal_address,
+            "email": seller.email
+        }
+        )
+
+
 if __name__ == "__main__":
     app.run(debug=True)
