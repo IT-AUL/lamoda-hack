@@ -7,6 +7,7 @@ from werkzeug.security import check_password_hash
 from flask_cors import CORS
 from config import Config
 from models import db, Seller
+from routes.llm_validation import llm_validation, llm_validation_bp
 from routes.products import product_bp
 from utils import generate_random_password, generate_username, send_email_mock
 
@@ -19,6 +20,7 @@ jwt = JWTManager(app)
 with app.app_context():
     db.create_all()
 app.register_blueprint(product_bp)
+app.register_blueprint(llm_validation_bp)
 
 
 @app.route("/registration", methods=["POST"])
