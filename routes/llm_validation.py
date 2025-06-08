@@ -10,11 +10,7 @@ prompt = utils.get_prompt()
 
 
 @llm_validation_bp.route('', methods=['POST'])
-@jwt_required()
 def create_product():
-    data = request.json
-    current_user_id = get_jwt_identity()
-
     text = request.json.get('text')
     response = llm_validation(text)
     return jsonify({"response": response})
