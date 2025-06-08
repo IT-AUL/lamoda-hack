@@ -97,6 +97,7 @@ def login():
 
 
 @app.get("/info")
+@jwt_required()
 def info():
     current_user_id = get_jwt_identity()
     seller = Seller.query.filter_by(id=current_user_id).first()
